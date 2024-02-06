@@ -4,12 +4,8 @@ the results into a MN object's attribute to redraw cartoon representations.
 """
 
 # PREAMBLE
-#import MDAnalysis
 
-## to handle blender objects... this is gonna be the painful part
-#import bpy
-
-
+# FUNCTIONS
 def run_dssp(dssp_bin_path, structure_file_path, output_file = 'mkdssp_output.cif', working_dir = './'):
     """
     run the user-designated mkdssp command on the input structure file. output
@@ -37,8 +33,8 @@ def run_dssp(dssp_bin_path, structure_file_path, output_file = 'mkdssp_output.ci
 
     """
     import subprocess
-    #import sys
 
+    # try running the command
     try:
         stdout = subprocess.run(f'{dssp_bin_path} {structure_file_path} {output_file}',capture_output=True,shell=True,cwd=working_dir,check=True)
     # if the subprocess.run errors with a CalledProcessError, then the mkdssp 
@@ -48,15 +44,11 @@ def run_dssp(dssp_bin_path, structure_file_path, output_file = 'mkdssp_output.ci
         return 1
 
     # similarly, if the returncode != 0, then some other error occurred and 
-    # we should not attempt to parse the stdout text for 2ndary structure info
+    # we should not attempt to parse the output file for 2ndary structure info
     # so return 1 as the exit status, denoting the error/failure
     if stdout.returncode != 0:
         return 1
-
-    #encoding = sys.stdout.encoding
-    #return stdout.stdout.decode(encoding)
     
-    # otherwise, returncode is 0 and we return the path to the output file
     return output_file
 
 
@@ -175,7 +167,6 @@ def parse_mmcif_output(result_file_path):
         if chainid not in chains or resid not in resids:
             continue
 
-        print(chainid,resid)
         # loop over structures to determine the 2ndary structure type
         for structure in structures_list:
             # if chainid and resid match with a structure's, update the 
@@ -232,5 +223,6 @@ if __name__ == '__main__':
 
     with open('./dssp_tests/ss_mapping.dat','w') as out:
         out.write(''.join([str(i)+'\n' for i in np.array(model_ss_values)]))
+
 
 
