@@ -101,6 +101,10 @@ def zoom_to_fit(camera_object,visual_objects_list,scaling = 1.05):
     :parameter scaling: float, magnitude that the camera zoom will be scaled by;
         basically a fudge factor so the zoom isn't toooo zealous.
 
+    NOTE: the bpy.ops.view3d.camera_to_view_selected() returns {'CANCELLED'}
+          when a protein structure is drawn using Spheres but works with
+          Cartoon. I cannot explain why. To avoid this issue, only apply this 
+          function when protein(s) are drawn using Cartoon reps. 
     """
     # grab the original camera vector
     cam_loc_norm = cam.location.normalized()
