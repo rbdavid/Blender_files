@@ -104,7 +104,7 @@ def rotate_vertices(vertices, rot_array, rot_type = 'rotation_matrix'):
     return vertices
 
 
-def zoom_to_fit(camera_object,visual_objects_list,scaling = 1.05):
+def zoom_to_fit(camera_object,visual_objects_list,scaling = 1.05, maintain_vector = True):
     """
     given a camera object and a list of visible objects, zoom the camera in/out
     so that white-space is minimized (as determined by the scaling value) 
@@ -116,14 +116,17 @@ def zoom_to_fit(camera_object,visual_objects_list,scaling = 1.05):
         zoomed in/out on. 
     :parameter scaling: float, magnitude that the camera zoom will be scaled by;
         basically a fudge factor so the zoom isn't toooo zealous.
+    :parameter maintain_vector: boolean, set to True if you wish the camera to
+        keep the original viewport vector; False if shifts are acceptable. 
 
     NOTE: the bpy.ops.view3d.camera_to_view_selected() returns {'CANCELLED'}
           when a protein structure is drawn using Spheres but works with
           Cartoon. I cannot explain why. To avoid this issue, only apply this 
           function when protein(s) are drawn using Cartoon reps. 
     """
-    # grab the original camera vector
-    cam_loc_norm = cam.location.normalized()
+    if maintain_vector:
+        # grab the original camera vector
+        cam_loc_norm = cam.location.normalized()
 
     # set the important objects' select value to True
     for obj in visual_objects_list:
@@ -135,12 +138,19 @@ def zoom_to_fit(camera_object,visual_objects_list,scaling = 1.05):
     # deselect all the objects; for bookkeeping sake
     bpy.ops.object.select_all(action='DESELECT')
 
-    # calculate the zealous zoom magnitude
-    new_cam_mag = cam.location.magnitude
+    if maintain_vector:
+        # calculate the zealous zoom magnitude
+        new_cam_mag = cam.location.magnitude
 
-    # to back away from the zealous zoom and correct any potential changes to
-    # the original camera vector, scale the cam_loc_norm by scaling*new_cam_mag
-    cam.location = scaling * new_cam_mag * cam_loc_norm
+        # back away from the zealous zoom and correct any potential changes to
+        # the original camera vector, scale the cam_loc_norm by 
+        # scaling*new_cam_mag
+        cam.location = scaling * new_cam_mag * cam_loc_norm
+
+    else:
+        # back away from the zealous zoom without worrying about recreating the
+        # original view vector
+        cam.location *= scaling
 
     return
 
