@@ -90,6 +90,7 @@ def parse_mmcif_output(result_file_path):
         the assigned 2ndary structure integers as defined in the 
         struct_type_dict.
     """
+    import numpy as np
     import biotite.structure.io.pdbx as pdbx
 
     # define mmcif 2ndary structure dictionary

@@ -48,12 +48,24 @@ def svd_align(vertices):
     # calculate and apply the rotation matrix to align the principal axes to the
     # xy-plane; keep the rotation matrix so it can be applied again if need be
     new_pos_array, rot_matrix = svd_align(pos_array)
-    # update the position attribute values with vectors from the rotated 
-    # position array
+
+    # NOTE: there's two paths to follow from here. Alter the underlying 
+    #       attribute values (so the actual atom positions) OR apply a rotation
+    #       on the blender object (without changing the atom position values)
+
+    # PATH ONE: update the position attribute values with vectors from the 
+    # rotated position array
     positions.data.foreach_set('vector',new_pos_array.reshape(-1).copy(order='c'))
     # force update the position data so that geometry nodes and the 3d viewport
     # are updated.
     structure.data.update()
+
+    # PATH TWO: convert the Vt 3x3 rotation matrix to a quaternion and apply on
+    # the blender object's quaternion rotation values
+    structure.rotation_mode = 'QUATERNION'
+    mu_Vt = Matrix(Vt)  # note blender python pre-imports mathutils
+    mu_Vt_quaternion = mu_Vt.to_quaternion()
+    # NOTE: I THINK THIS SECOND PATH IS MORE APPROPRIATE FOR BLENDER WORKFLOWS
     
     """
 
@@ -68,6 +80,10 @@ def rotate_vertices(vertices, rot_array, rot_type = 'rotation_matrix'):
     :parameter rot_type: string, accepted values: 'rotation_matrix', 
         'euler_angles', and 'quaternion'
     :return new_vertices: 2d array, same shape as input vertices but now rotated
+
+    NOTE: AVOID USING THIS WHEN POSSIBLE, I THINK. SHOULD AVOID ALTERING THE 
+          UNDERLYING ATOM ATTRIBUTES AND RATHER APPLY ROTATIONS USING THE 
+          OBJECT TRANSFORM OPTIONS
     """
 
     import numpy as np
