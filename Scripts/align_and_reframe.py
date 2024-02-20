@@ -126,7 +126,7 @@ def zoom_to_fit(camera_object,visual_objects_list,scaling = 1.05, maintain_vecto
     """
     if maintain_vector:
         # grab the original camera vector
-        cam_loc_norm = cam.location.normalized()
+        cam_loc_norm = camera_object.location.normalized()
 
     # set the important objects' select value to True
     for obj in visual_objects_list:
@@ -140,17 +140,17 @@ def zoom_to_fit(camera_object,visual_objects_list,scaling = 1.05, maintain_vecto
 
     if maintain_vector:
         # calculate the zealous zoom magnitude
-        new_cam_mag = cam.location.magnitude
+        new_cam_mag = camera_object.location.magnitude
 
         # back away from the zealous zoom and correct any potential changes to
         # the original camera vector, scale the cam_loc_norm by 
         # scaling*new_cam_mag
-        cam.location = scaling * new_cam_mag * cam_loc_norm
+        camera_object.location = scaling * new_cam_mag * cam_loc_norm
 
     else:
         # back away from the zealous zoom without worrying about recreating the
         # original view vector
-        cam.location *= scaling
+        camera_object.location *= scaling
 
     return
 
