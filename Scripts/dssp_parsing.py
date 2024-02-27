@@ -55,7 +55,8 @@ def run_dssp(dssp_bin_path, structure_file_path, output_file = 'mkdssp_output.ci
 def parse_dssp_output(results):
     """ 
     NEVER FINISHED. NOT NEEDED SINCE THE DSSP FILE FORMAT SHOULD BE AVOIDED; it
-    suffers from similar issues as the PDB file format, set column issues
+    suffers from similar issues as the PDB file format, hard-set column issues
+    
     read the input dssp-formatted results from mkdssp and gather the 2ndary 
     structure labels associated with the residue index
     :parameter results: string, mkdssp results to be parsed
@@ -100,7 +101,9 @@ def parse_mmcif_output(result_file_path):
     # won't lose details about structures like the current implementation in MN 
     # does. 
     # NOTE: the mmcif file format output from mkdssp does not differentiate a 
-    # \beta-bridge residue and a beta-sheet/strand residue. 
+    # \beta-bridge residue and a beta-sheet/strand residue. The original dssp 
+    # output format did differentiate the two. No great loss in my opinion,
+    # still gonna denote the loss by skipping the index. 
     # 0 --> unstructured/loop
     # 1 --> H, HELX_RH_AL_P, \alpha helix
     # 2 --> G, HELX_RH_3T_P, 3_{10} helix

@@ -31,6 +31,7 @@ def svd_align(vertices):
     # the principal components are aligned with the xyz dimensions. 
     U, S, Vt = np.linalg.svd(vertices)
     # multiply matrices to do the alignment
+    # transpose Vt to do the right matrix mult
     new_vertices = vertices @ Vt.T
     # add the center of geometry back to get original origin
     new_vertices = new_vertices + CoG
@@ -62,9 +63,16 @@ def svd_align(vertices):
 
     # PATH TWO: convert the Vt 3x3 rotation matrix to a quaternion and apply on
     # the blender object's quaternion rotation values
-    structure.rotation_mode = 'QUATERNION'
     mu_Vt = Matrix(Vt)  # note blender python pre-imports mathutils
-    mu_Vt_quaternion = mu_Vt.to_quaternion()
+    
+    # if you wanna use quaternions
+    structure.rotation_mode = 'QUATERNION'
+    structure.rotation_quaternion = mu_Vt.to_quaternion()
+
+    # if you wanna use euler angles
+    structure.object.rotation_mode = 'XYZ'
+    structure.rotation_euler = mu_Vt.to_euler()
+
     # NOTE: I THINK THIS SECOND PATH IS MORE APPROPRIATE FOR BLENDER WORKFLOWS
     
     """
