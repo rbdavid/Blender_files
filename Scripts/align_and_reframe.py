@@ -6,35 +6,43 @@ functions to align objects to a standardized view point and then zoom in on them
 import bpy
 import numpy as np
 
+
+def calc_CoM(positions, atomic_masses):
+    """
+    calculate the Center of Mass from a structure's atom position and mass 
+    attributes
+
+    :parameter positions: array of (nAtoms, 3) shape. 
+    :parameter atomic_masses: list or array of (nAtoms,) shape. 
+    :return CoM: array of (3,) shape, associated with the coordinates of the 
+        center of mass of the atom structures. 
+    """
+    return np.sum(atomic_masses[:,None] * positions, axis = 0 )/np.sum(atomic_masses)
+
+
 def svd_align(vertices):
     """
-    remove CoM translation, rotate the vertices to align principal components of
-    vertices along the xyz dimensions, add back CoG translation, return vertices
-    and the applied rotation matrix.
+    rotate the vertices to align principal components of vertices along the xyz
+    dimensions, return the rotated vertices and the calculated rotation matrix.
 
     use singular value decomposition to calculate the rotation matrix for 
     aligning the vertices to the xyz dimensions
 
     :parameter vertices: 2d array, assumed to be Nx3 associated with the atomic
-        positions of a single structure. 
+        positions of a single structure. Center of mass or geometry assumed to 
+        be removed already.
     :return new_vertices: 2d array, same shape as input vertices but now rotated.
     :return new_vertices: 2d array, shape 3x3, rotation matrix used to calculate
         the new vertices.
     """
     import numpy as np
     
-    # calc the center of geometry
-    CoG = np.mean(vertices,axis=0)
-    # remove center of geometry from the vertices
-    vertices = vertices - CoG
     # do the SVD to get the unitary array needed to rotate the vertices so that
     # the principal components are aligned with the xyz dimensions. 
     U, S, Vt = np.linalg.svd(vertices)
     # multiply matrices to do the alignment
     # transpose Vt to do the right matrix mult
     new_vertices = vertices @ Vt.T
-    # add the center of geometry back to get original origin
-    new_vertices = new_vertices + CoG
     
     return new_vertices, Vt
 
@@ -77,39 +85,36 @@ def svd_align(vertices):
     
     """
 
-def rotate_vertices(vertices, rot_array, rot_type = 'rotation_matrix'):
-    """
-    rotate the given vertices by the rotation_matrix
-    remove CoG, rotate, add CoG back.
 
-    :parameter vertices: 2d array, assumed to be Nx3 associated with the atomic
-        positions of a single structure. 
-    :parameter rot_array: numpy array, varying shapes based on the rotation type
-    :parameter rot_type: string, accepted values: 'rotation_matrix', 
-        'euler_angles', and 'quaternion'
-    :return new_vertices: 2d array, same shape as input vertices but now rotated
-
-    NOTE: AVOID USING THIS WHEN POSSIBLE, I THINK. SHOULD AVOID ALTERING THE 
-          UNDERLYING ATOM ATTRIBUTES AND RATHER APPLY ROTATIONS USING THE 
-          OBJECT TRANSFORM OPTIONS
-    """
-
-    import numpy as np
-
-    CoG = np.mean(vertices,axis=0)
-    vertices = vertices - CoG
-    
-    # check if a rotation matrix is given
-    if rot_type.lower() == 'rotation_matrix' and rot_array.shape() == (3,3):
-        # matrix multiply the vertices by the rot_array transpose
-        vertices = vertices @ rot_array.T
-        vertices = vertices + CoG
-    #elif rot_type.lower() == 'quaternion' and rot_array.shape() == (4,):
-    #    # do the thing here
-    #elif rot_type.lower() == 'euler_angles' and rot_array.shape() == (4,):
-    #    # do the thing here
-
-    return vertices
+#def rotate_vertices(vertices, rot_array, rot_type = 'rotation_matrix'):
+#    """
+#    rotate the given vertices by the rotation_matrix
+#    remove CoG, rotate, add CoG back.
+#
+#    :parameter vertices: 2d array, assumed to be Nx3 associated with the atomic
+#        positions of a single structure. 
+#    :parameter rot_array: numpy array, varying shapes based on the rotation type
+#    :parameter rot_type: string, accepted values: 'rotation_matrix', 
+#        'euler_angles', and 'quaternion'
+#    :return new_vertices: 2d array, same shape as input vertices but now rotated
+#
+#    NOTE: AVOID USING THIS WHEN POSSIBLE, I THINK. SHOULD AVOID ALTERING THE 
+#          UNDERLYING ATOM ATTRIBUTES AND RATHER APPLY ROTATIONS USING THE 
+#          OBJECT TRANSFORM OPTIONS
+#    """
+#
+#    import numpy as np
+#    
+#    # check if a rotation matrix is given
+#    if rot_type.lower() == 'rotation_matrix' and rot_array.shape() == (3,3):
+#        # matrix multiply the vertices by the rot_array transpose
+#        vertices = vertices @ rot_array.T
+#    #elif rot_type.lower() == 'quaternion' and rot_array.shape() == (4,):
+#    #    # do the thing here
+#    #elif rot_type.lower() == 'euler_angles' and rot_array.shape() == (4,):
+#    #    # do the thing here
+#
+#    return vertices
 
 
 def zoom_to_fit(camera_object,visual_objects_list,scaling = 1.05, maintain_vector = True):
