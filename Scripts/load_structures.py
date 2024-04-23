@@ -26,7 +26,9 @@ scaling = 0.2
 rows_y_dims = []
 
 # loop over all entries in the dictionary
-for chromosomeID in order.keys():
+chromosomeIDs = [key for key in order.keys()]
+chromosomeIDs.sort()
+for chromosomeID in chromosomeIDs:
     # loop over all proteins associated with chromosomeID
     proteinIDs = list(order[chromosomeID].keys())
     proteinIDs.sort()
@@ -37,8 +39,8 @@ for chromosomeID in order.keys():
             name = f'Sphmag{chromosomeID}G{protein}'
         structure_file = structure_file_path + name + '.1.pdb'
         # load molecule object into blender
-        mol = mn.io.local.load(structure_file, name=object_name, style='customRBD')
-        b_object = bpy.data.objects[object_name]
+        mol = mn.io.local.load(structure_file, name=name, style='customRBD')
+        b_object = bpy.data.objects[name]
         # scale the object down by a constant amount
         b_object.scale[0] = scaling
         b_object.scale[1] = scaling
