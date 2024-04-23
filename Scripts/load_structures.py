@@ -9,7 +9,7 @@ from pathlib import Path
 # annotation/results pickle file? to add those to properties?
 
 with open('C:\\Users\\rbdch\\Dropbox\\for_blender\\SAFA_visualizations\\sdiv_gene_order.pkl','rb') as pkl_in:
-    order = pkl.load(pkl_in)
+    order = pickle.load(pkl_in)
 
 structure_file_path = 'D:\\BlenderFiles\\SAFA_visualization_work\\StructureFiles\\'
 
