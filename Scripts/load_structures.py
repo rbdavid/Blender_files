@@ -71,8 +71,8 @@ for chromosomeID in order.keys():
         rows_y_dims.append(dimensions[1]/2.)
 
         # add metadata as properties of the structure object
-        b_object['pLDDT'] = pLDDT_value
-        b_object['pTMs']  = pTMs_value
+        b_object['pLDDT'] = order[chromosomeID][protein][0]
+        b_object['pTMs']  = order[chromosomeID][protein][1]
         b_object['Chromosome']  = str(chromosomeID)
 
         b_object.modifiers['MolecularNodes'].node_group.nodes['MN_color_attribute_random.001'].inputs[3].default_value = 21
