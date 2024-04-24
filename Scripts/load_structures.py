@@ -22,7 +22,7 @@ previous_halfmax_x = 0.
 # track the previous row's 1/2 max of y dimensions to get ideal spacing between rows
 previous_halfmax_y = 0.
 # track the previous row's 1/2 max of z dimensions to get ideal spacing between rows
-previous_halfmax_y = 0.
+previous_halfmax_z = 0.
 # set the spacing between structures
 delta_scaling = 1.05
 # set the blender object scaling transformation
@@ -90,5 +90,6 @@ for chromosomeID in chromosomeIDs:
     
     previous_halfmax_x  = x_boundaries[0]
     previous_halfmax_y -= max(rows_y_dims)*delta_scaling
+    previous_halfmax_z  = 0
     rows_y_dims = []
 
