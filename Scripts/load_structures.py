@@ -86,10 +86,10 @@ for chromosomeID in chromosomeIDs:
         b_object['pTMs']  = scores_list[0]
         b_object['Chromosome']  = str(chromosomeID)
 
-        #b_object.modifiers['MolecularNodes'].node_group.nodes['MN_color_attribute_random.001'].inputs[3].default_value = 21
+        b_object.modifiers['MolecularNodes'].node_group.nodes['MN_color_attribute_random'].inputs[3].default_value = 21
     
     previous_halfmax_x  = 0
-    previous_halfmax_y -= max(rows_y_dims)*delta_scaling
+    previous_halfmax_y -= 1.5*delta_scaling*max(rows_y_dims)
     previous_halfmax_z  = 0
     rows_y_dims = []
 
