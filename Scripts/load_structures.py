@@ -15,24 +15,30 @@ structure_file_path = 'D:\\BlenderFiles\\SAFA_visualization_work\\StructureFiles
 
 x_boundaries = (0,2)  # units of meters
 y_init = 0  # units of rows
+z_init = 0  # units of rows
 
 # track the previous grid's 1/2 max of x-dimension to get ideal placement of next object
 previous_halfmax_x = 0.
 # track the previous row's 1/2 max of y dimensions to get ideal spacing between rows
 previous_halfmax_y = 0.
-delta_y_scaling = 1.05
-delta_x_scaling = 1.05
-scaling = 0.2
+# track the previous row's 1/2 max of z dimensions to get ideal spacing between rows
+previous_halfmax_y = 0.
+# set the spacing between structures
+delta_scaling = 1.05
+# set the blender object scaling transformation
+size_scaling = 0.2
+# create collector for y-dimension values
 rows_y_dims = []
+rows_z_dims = []
 
 # loop over all entries in the dictionary
 chromosomeIDs = [key for key in order.keys()]
 chromosomeIDs.sort()
 for chromosomeID in chromosomeIDs:
-    # loop over all proteins associated with chromosomeID
-    proteinIDs = list(order[chromosomeID].keys())
-    proteinIDs.sort()
-    for protein in proteinIDs[:10]:
+    # loop over all proteins associated with chromosomeID, sorted by pTMs values
+    proteinIDs = list(order[chromosomeID].items())
+    proteinIDs.sort(key = lambda x: x[1][0], reverse=True)
+    for protein in proteinIDs[:50]:
         if chromosomeID == 'U': 
             name = f'Sphmag{chromosomeID}{protein}'
         else: 
@@ -42,12 +48,12 @@ for chromosomeID in chromosomeIDs:
         mol = mn.io.local.load(structure_file, name=name, style='customRBD')
         b_object = bpy.data.objects[name]
         # scale the object down by a constant amount
-        b_object.scale[0] = scaling
-        b_object.scale[1] = scaling
-        b_object.scale[2] = scaling
+        b_object.scale[0] = size_scaling
+        b_object.scale[1] = size_scaling
+        b_object.scale[2] = size_scaling
 
         # get the in-canvas dimensions of the object
-        dimensions = b_object.dimensions*scaling
+        dimensions = b_object.dimensions*size_scaling
         # translate the object to its appropriate grid position
         # we know starting location will be (0,0,0) and then we want to span 
         # structures out along the x-axis until a max value is hit, then jump
@@ -57,8 +63,8 @@ for chromosomeID in chromosomeIDs:
         # next row
         if previous_halfmax_x > x_boundaries[1]:
             previous_halfmax_x  = x_boundaries[0]
-            previous_halfmax_y += delta_y_scaling*max(rows_y_dims)
-            rows_y_dims = []
+            previous_halfmax_z -= delta_scaling*max(rows_z_dims)
+            rows_z_dims = []
        
         # if the object isn't the first in a row
         if previous_halfmax_x != x_boundaries[0]:
@@ -72,12 +78,17 @@ for chromosomeID in chromosomeIDs:
         b_object.location[1] += previous_halfmax_y
         rows_y_dims.append(dimensions[1]/2.)
 
+        b_object.location[2] += previous_halfmax_z
+        rows_z_dims.append(dimensions[2]/2.)
+
         # add metadata as properties of the structure object
-        b_object['pLDDT'] = order[chromosomeID][protein][0]
-        b_object['pTMs']  = order[chromosomeID][protein][1]
+        b_object['pLDDT'] = order[chromosomeID][protein][1]
+        b_object['pTMs']  = order[chromosomeID][protein][0]
         b_object['Chromosome']  = str(chromosomeID)
 
-        b_object.modifiers['MolecularNodes'].node_group.nodes['MN_color_attribute_random.001'].inputs[3].default_value = 21
-
-    previous_halfmax_y += max(rows_y_dims)*delta_y_scaling**2
+        #b_object.modifiers['MolecularNodes'].node_group.nodes['MN_color_attribute_random.001'].inputs[3].default_value = 21
+    
+    previous_halfmax_x  = x_boundaries[0]
+    previous_halfmax_y -= max(rows_y_dims)*delta_scaling
+    rows_y_dims = []
 
