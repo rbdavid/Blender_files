@@ -24,7 +24,7 @@ previous_halfmax_y = 0.
 # track the previous row's 1/2 max of z dimensions to get ideal spacing between rows
 previous_halfmax_z = 0.
 # set the spacing between structures
-delta_scaling = 1.05
+delta_scaling = 1.25
 # set the blender object scaling transformation
 size_scaling = 0.2
 # create collector for y-dimension values
@@ -63,7 +63,7 @@ for chromosomeID in chromosomeIDs:
         # next row
         if previous_halfmax_x > x_boundaries[1]:
             previous_halfmax_x  = x_boundaries[0]
-            previous_halfmax_z -= delta_scaling*max(rows_z_dims)
+            previous_halfmax_z -= 2*max(rows_z_dims) #* delta_scaling**2
             rows_z_dims = []
        
         # if the object isn't the first in a row
