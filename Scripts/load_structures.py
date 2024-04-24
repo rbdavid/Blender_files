@@ -38,7 +38,7 @@ for chromosomeID in chromosomeIDs:
     # loop over all proteins associated with chromosomeID, sorted by pTMs values
     proteinIDs = list(order[chromosomeID].items())
     proteinIDs.sort(key = lambda x: x[1][0], reverse=True)
-    for protein in proteinIDs[:50]:
+    for (protein, scores_list) in proteinIDs[:50]:
         if chromosomeID == 'U': 
             name = f'Sphmag{chromosomeID}{protein}'
         else: 
@@ -82,8 +82,8 @@ for chromosomeID in chromosomeIDs:
         rows_z_dims.append(dimensions[2]/2.)
 
         # add metadata as properties of the structure object
-        b_object['pLDDT'] = order[chromosomeID][protein][1]
-        b_object['pTMs']  = order[chromosomeID][protein][0]
+        b_object['pLDDT'] = scores_list[1]
+        b_object['pTMs']  = scores_list[0]
         b_object['Chromosome']  = str(chromosomeID)
 
         #b_object.modifiers['MolecularNodes'].node_group.nodes['MN_color_attribute_random.001'].inputs[3].default_value = 21
