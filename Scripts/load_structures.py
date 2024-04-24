@@ -13,7 +13,7 @@ with open('C:\\Users\\rbdch\\Dropbox\\for_blender\\SAFA_visualizations\\sdiv_gen
 
 structure_file_path = 'D:\\BlenderFiles\\SAFA_visualization_work\\StructureFiles\\'
 
-x_boundaries = (0,2)  # units of meters
+x_boundaries = (0,1)  # units of meters
 y_init = 0  # units of rows
 z_init = 0  # units of rows
 
@@ -38,7 +38,7 @@ for chromosomeID in chromosomeIDs:
     # loop over all proteins associated with chromosomeID, sorted by pTMs values
     proteinIDs = list(order[chromosomeID].items())
     proteinIDs.sort(key = lambda x: x[1][0], reverse=True)
-    for (protein, scores_list) in proteinIDs[:50]:
+    for (protein, scores_list) in proteinIDs[:10]:
         if chromosomeID == 'U': 
             name = f'Sphmag{chromosomeID}{protein}'
         else: 
@@ -88,8 +88,8 @@ for chromosomeID in chromosomeIDs:
 
         #b_object.modifiers['MolecularNodes'].node_group.nodes['MN_color_attribute_random.001'].inputs[3].default_value = 21
     
-    previous_halfmax_x  = x_boundaries[0]
-    previous_halfmax_y -= max(rows_y_dims)*delta_scaling
+    previous_halfmax_x  = 0
+    previous_halfmax_y -= 2*max(rows_y_dims) #*delta_scaling
     previous_halfmax_z  = 0
     rows_y_dims = []
 
