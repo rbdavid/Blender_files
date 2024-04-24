@@ -69,11 +69,11 @@ for chromosomeID in chromosomeIDs:
         # if the object isn't the first in a row
         if previous_halfmax_x != x_boundaries[0]:
             # add first half of object's x dim to the location
-            b_object.location[0] += previous_halfmax_x + dimensions[0]/2.
+            b_object.location[0] += previous_halfmax_x + delta_scaling*dimensions[0]/2.
         else:
             b_object.location[0] = x_boundaries[0]
         # add second half of object's x dim to the previous_halfmax_x
-        previous_halfmax_x = b_object.location[0] + dimensions[0]/2.
+        previous_halfmax_x = b_object.location[0] + delta_scaling*dimensions[0]/2.
         
         b_object.location[1] += previous_halfmax_y
         rows_y_dims.append(dimensions[1]/2.)
