@@ -37,7 +37,7 @@ proteinIDs = list(order[chromosomeID].items())
 proteinIDs.sort(key = lambda x: x[1][0], reverse=True)
 for (protein, scores_list) in proteinIDs[:max_structures]:
     # set the name of the structure
-    if chromosomeID = 'U':
+    if chromosomeID == 'U':
         name = f'Sphmag{chromosomeID}{protein}'
     else:
         name = f'Sphmag{chromosomeID}G{protein}'
@@ -68,7 +68,8 @@ for (protein, scores_list) in proteinIDs[:max_structures]:
     # if the object isn't the first in a row
     if previous_halfmax_x != x_boundaries[0]:
         # add first half of object's x dim to the location
-        b_object.location[0] += previous_halfmax_x + delta_scaling*dimensions[0]/2.
+        #b_object.location[0] += previous_halfmax_x + delta_scaling*dimensions[0]/2.
+        b_object.location[0] += 0.15
     else:
         b_object.location[0] = x_boundaries[0]
     # add second half of object's x dim to the previous_halfmax_x
