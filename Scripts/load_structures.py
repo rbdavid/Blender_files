@@ -2,6 +2,7 @@
 import molecularnodes as mn
 import bpy
 import pickle
+import numpy as np
 from pathlib import Path
 
 chromosomeID = '01'
