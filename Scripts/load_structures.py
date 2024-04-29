@@ -6,7 +6,7 @@ import numpy as np
 from pathlib import Path
 
 chromosomeID = '01'
-max_structures = 200
+max_structures = 500
 y_init = 0  # units of rows
 
 # load order pickle file
@@ -27,7 +27,7 @@ previous_halfmax_x = 0.
 # track the previous row's 1/2 max of z dimensions to get ideal spacing between rows
 previous_halfmax_z = 0.
 # set the spacing between structures
-delta_scaling = 2.5
+delta_scaling = 1.5
 # set the blender object scaling transformation
 size_scaling = 0.2
 # create collector for y-dimension values
