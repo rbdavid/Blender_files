@@ -92,12 +92,13 @@ for bpy_object in objects_list:
     # if the object isn't the first in a row
     if previous_halfmax_x != x_boundaries[0]:
         # add first half of object's x dim to the location
-        #b_object.location[0] += previous_halfmax_x + delta_scaling*dimensions[0]/2.
-        bpy_object.location[0] += previous_halfmax_x + max_x_dimension/2.
+        b_object.location[0] += previous_halfmax_x + dimensions[0]/2.
+        #bpy_object.location[0] += previous_halfmax_x + max_x_dimension/2.
     else:
         bpy_object.location[0] = x_boundaries[0]
     # add second half of object's x dim to the previous_halfmax_x
     previous_halfmax_x = bpy_object.location[0] + delta_scaling*max_x_dimension/2.
+    #previous_halfmax_x = bpy_object.location[0] + delta_scaling*max_x_dimension/2.
     
     bpy_object.location[1] += y_init
 
