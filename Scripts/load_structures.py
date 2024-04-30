@@ -34,8 +34,8 @@ size_scaling = 0.2
 rows_z_dims = []
 
 proteinIDs = list(order[chromosomeID].items())
-#proteinIDs.sort(key = lambda x: x[0], reverse=True)
-proteinIDs.sort(key = lambda x: x[1][0], reverse=True)
+proteinIDs.sort(key = lambda x: x[0], reverse=False)
+#proteinIDs.sort(key = lambda x: x[1][0], reverse=True)
 objects_list = []
 for i, (protein, scores_list) in enumerate(proteinIDs[:max_structures]):
     # set the name of the structure
@@ -93,7 +93,7 @@ for bpy_object in objects_list:
     if previous_halfmax_x != x_boundaries[0]:
         # add first half of object's x dim to the location
         #b_object.location[0] += previous_halfmax_x + delta_scaling*dimensions[0]/2.
-        bpy_object.location[0] += previous_halfmax_x + (max_x_dimension/2.)*delta_scaling
+        bpy_object.location[0] += previous_halfmax_x + max_x_dimension/2.
     else:
         bpy_object.location[0] = x_boundaries[0]
     # add second half of object's x dim to the previous_halfmax_x
