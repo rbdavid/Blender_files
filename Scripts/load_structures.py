@@ -6,8 +6,11 @@ import numpy as np
 from pathlib import Path
 
 chromosomeID = '01'
-max_structures = 200
+max_structures = 300
 y_init = 0  # units of rows
+
+x_boundaries = (0,100)  # units of meters
+z_init = 0  # units of rows
 
 # load order pickle file
 # also 
@@ -17,9 +20,6 @@ with open('C:\\Users\\rbdch\\Dropbox\\for_blender\\SAFA_visualizations\\sdiv_gen
 
 structure_file_path = 'D:\\BlenderFiles\\SAFA_visualization_work\\StructureFiles\\'
 
-x_boundaries = (0,100)  # units of meters
-z_init = 0  # units of rows
-
 # track the previous grid's 1/2 max of x-dimension to get ideal placement of next object
 previous_halfmax_x = 0.
 ## track the previous row's 1/2 max of y dimensions to get ideal spacing between rows
@@ -27,15 +27,15 @@ previous_halfmax_x = 0.
 # track the previous row's 1/2 max of z dimensions to get ideal spacing between rows
 previous_halfmax_z = 0.
 # set the spacing between structures
-delta_scaling = 1.2
+delta_scaling = 1.5
 # set the blender object scaling transformation
 size_scaling = 0.2
 # create collector for y-dimension values
 rows_z_dims = []
 
 proteinIDs = list(order[chromosomeID].items())
-proteinIDs.sort(key = lambda x: x[0], reverse=False)
-#proteinIDs.sort(key = lambda x: x[1][0], reverse=True)
+#proteinIDs.sort(key = lambda x: x[0], reverse=False)
+proteinIDs.sort(key = lambda x: x[1][0], reverse=True)
 objects_list = []
 for i, (protein, scores_list) in enumerate(proteinIDs[:max_structures]):
     # set the name of the structure
@@ -91,16 +91,15 @@ for i, bpy_object in enumerate(objects_list):
     
     # if the object isn't the first in a row
     if previous_halfmax_x != x_boundaries[0]:
+        # set new location using previous object's location (halfmax_x
+        # dimension) + scaled average of the previous and current objects' x 
+        # dimensions
         bpy_object.location[0] += objects_list[i-1].location[0] + delta_scaling*(objects_list[i-1].dimensions[0] + bpy_object.dimensions[0])/2.
-        
-        # add first half of object's x dim to the location
-        #bpy_object.location[0] += previous_halfmax_x + max_x_dimension/2.
+        previous_halfmax_x = bpy_object.location[0]
+    # if object is first in row, set its location to the boundary and change the halfmax_x value 
     else:
         bpy_object.location[0] = x_boundaries[0]
-    previous_halfmax_x = bpy_object.location[0]
-    
-    # add second half of object's x dim to the previous_halfmax_x
-    #previous_halfmax_x = bpy_object.location[0] + delta_scaling*max_x_dimension/2.
+        previous_halfmax_x = x_boundaries[0] + 0.00001
     
     bpy_object.location[1] += y_init
 
