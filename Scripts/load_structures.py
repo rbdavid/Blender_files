@@ -6,7 +6,7 @@ import numpy as np
 from pathlib import Path
 
 chromosomeID = '01'
-max_structures = 500
+max_structures = 200
 y_init = 0  # units of rows
 
 # load order pickle file
@@ -17,7 +17,7 @@ with open('C:\\Users\\rbdch\\Dropbox\\for_blender\\SAFA_visualizations\\sdiv_gen
 
 structure_file_path = 'D:\\BlenderFiles\\SAFA_visualization_work\\StructureFiles\\'
 
-x_boundaries = (0,4)  # units of meters
+x_boundaries = (0,100)  # units of meters
 z_init = 0  # units of rows
 
 # track the previous grid's 1/2 max of x-dimension to get ideal placement of next object
@@ -27,7 +27,7 @@ previous_halfmax_x = 0.
 # track the previous row's 1/2 max of z dimensions to get ideal spacing between rows
 previous_halfmax_z = 0.
 # set the spacing between structures
-delta_scaling = 1.5
+delta_scaling = 1.2
 # set the blender object scaling transformation
 size_scaling = 0.2
 # create collector for y-dimension values
@@ -74,7 +74,7 @@ max_x_dimension = np.max(np.array([bpy_object.dimensions[0] for bpy_object in ob
 max_z_dimension = np.max(np.array([bpy_object.dimensions[2] for bpy_object in objects_list]))
 
 # loop over the objects to position them correctly
-for bpy_object in objects_list:
+for i, bpy_object in enumerate(objects_list):
     # select the correct object
     bpy_object.select_set(True)
 
@@ -91,13 +91,15 @@ for bpy_object in objects_list:
     
     # if the object isn't the first in a row
     if previous_halfmax_x != x_boundaries[0]:
+        bpy_object.location[0] += objects_list[i-1].location[0] + delta_scaling*(objects_list[i-1].dimensions[0] + bpy_object.dimensions[0])/2.
+        
         # add first half of object's x dim to the location
-        bpy_object.location[0] += previous_halfmax_x + bpy_object.dimensions[0]/2.
         #bpy_object.location[0] += previous_halfmax_x + max_x_dimension/2.
     else:
         bpy_object.location[0] = x_boundaries[0]
+    previous_halfmax_x = bpy_object.location[0]
+    
     # add second half of object's x dim to the previous_halfmax_x
-    previous_halfmax_x = bpy_object.location[0] + delta_scaling*max_x_dimension/2.
     #previous_halfmax_x = bpy_object.location[0] + delta_scaling*max_x_dimension/2.
     
     bpy_object.location[1] += y_init
